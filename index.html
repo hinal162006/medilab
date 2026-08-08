@@ -1,0 +1,875 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Medilab</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Jost:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+<style>
+  :root{
+    --blue:#2f6bff;
+    --blue-dark:#1f3a93;
+    --ink:#1b2430;
+    --muted:#6c7889;
+  }
+  html{ scroll-behavior:smooth; scroll-padding-top:88px; }
+  body{ font-family:'Poppins', sans-serif; color:var(--ink); }
+  h1,h2,h3,h4,h5,h6{ font-family:'Jost', sans-serif; font-weight:600; }
+  a{ text-decoration:none; }
+  section{ padding:70px 0; scroll-margin-top:76px; }
+  .bg-soft{ background:#f6f8fc; }
+  .text-blue{ color:var(--blue) !important; }
+  .bg-blue{ background:var(--blue) !important; }
+
+  /* Topbar */
+  .topbar{ background:var(--blue-dark); color:#dbe4ff; font-size:.85rem; padding:8px 0; }
+  .topbar a{ color:#dbe4ff; }
+  .topbar .social a{ color:#dbe4ff; margin-left:12px; }
+
+  /* Navbar */
+  .navbar{ background:#fff; box-shadow:0 2px 10px rgba(0,0,0,.05); padding:14px 0; transition:box-shadow .2s ease, padding .2s ease; z-index:1030; }
+  .navbar.is-scrolled{ padding:8px 0; box-shadow:0 4px 18px rgba(20,30,60,.1); }
+  .navbar-brand{ font-weight:700; font-size:1.6rem; color:var(--ink) !important; }
+  .navbar-brand span{ color:var(--blue); }
+  .navbar-nav .nav-link{
+    color:var(--ink) !important; font-weight:500; margin:0 4px; padding:10px 12px !important;
+    position:relative;
+  }
+  .navbar-nav .nav-link::after{
+    content:""; position:absolute; left:12px; right:12px; bottom:4px; height:2px;
+    background:var(--blue); transform:scaleX(0); transform-origin:left; transition:transform .2s ease;
+  }
+  .navbar-nav .nav-link:hover{ color:var(--blue) !important; }
+  .navbar-nav .nav-link:hover::after{ transform:scaleX(1); }
+  .navbar-nav .nav-link.active{ color:var(--blue) !important; }
+  .navbar-nav .nav-link.active::after{ transform:scaleX(1); }
+  .navbar-nav .dropdown-menu{ border:none; box-shadow:0 8px 24px rgba(20,30,60,.12); border-radius:10px; padding:8px; margin-top:8px; }
+  .navbar-nav .dropdown-item{ border-radius:6px; padding:8px 14px; font-size:.92rem; }
+  .navbar-nav .dropdown-item:hover, .navbar-nav .dropdown-item:focus{ background:#f1f5ff; color:var(--blue); }
+  .navbar-nav .dropdown-item.active-link{ background:#f1f5ff; color:var(--blue); }
+  .btn-appt{ background:var(--blue); color:#fff; border-radius:30px; padding:10px 22px; font-weight:500; }
+  .btn-appt:hover{ background:var(--blue-dark); color:#fff; }
+  @media (max-width: 991.98px){
+    .navbar-collapse{ padding-top:14px; }
+    .navbar-nav .nav-link::after{ display:none; }
+    .navbar-nav .nav-link{ padding:10px 6px !important; }
+    .btn-appt{ display:inline-block; margin-top:10px; }
+  }
+
+  /* Hero */
+  .hero{
+    position:relative; overflow:hidden; padding:70px 0 0;
+    background-image: linear-gradient(to right, rgba(238,242,251,.96) 35%, rgba(238,242,251,.35) 68%, rgba(238,242,251,0)), url('images/hero-bg.jpg');
+    background-size:cover; background-position:right center; background-repeat:no-repeat;
+  }
+  .hero h1{ font-size:2.4rem; color:var(--ink); }
+  .hero p{ color:var(--muted); font-size:1.05rem; }
+  .hero .hero-inner{ padding:70px 0 60px; }
+
+  .why-card{
+    background:var(--blue);
+    color:#fff;
+    border-radius:10px;
+    padding:32px;
+  }
+  .why-card h4{ color:#fff; }
+  .why-card p{ color:#dbe4ff; font-size:.92rem; }
+  .why-card .btn-light{ border-radius:30px; font-weight:500; }
+
+  .feature-mini{
+    background:#fff;
+    border-radius:10px;
+    padding:26px 20px;
+    text-align:center;
+    box-shadow:0 4px 16px rgba(20,30,60,.06);
+    height:100%;
+  }
+  .feature-mini .icon{ font-size:1.8rem; color:var(--blue); margin-bottom:12px; }
+  .feature-mini h6{ font-size:.95rem; }
+  .feature-mini p{ font-size:.82rem; color:var(--muted); margin:0; }
+
+  /* About */
+  .about-img-wrap{ position:relative; }
+  .play-btn{
+    position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
+    width:64px; height:64px; background:var(--blue); border-radius:50%;
+    color:#fff; display:flex; align-items:center; justify-content:center; font-size:1.4rem;
+  }
+  .about-item{ display:flex; gap:16px; margin-bottom:22px; }
+  .about-item .num{ color:var(--blue); font-size:1.3rem; flex:none; }
+  .about-item h6{ margin-bottom:6px; }
+  .about-item p{ color:var(--muted); font-size:.88rem; margin:0; }
+
+  /* Stats */
+  .stat-card{ background:#fff; border-radius:10px; padding:28px; text-align:center; box-shadow:0 4px 16px rgba(20,30,60,.06); }
+  .stat-card .circle{
+    width:52px; height:52px; border-radius:50%; background:var(--blue); color:#fff;
+    display:flex; align-items:center; justify-content:center; margin:0 auto 14px; font-size:1.2rem;
+  }
+  .stat-card h3{ margin-bottom:2px; }
+  .stat-card span{ color:var(--muted); font-size:.85rem; }
+
+  /* Services */
+  .service-card{
+    border:1px solid #eaeef5; border-radius:10px; padding:32px 26px; height:100%;
+  }
+  .service-card .icon-box{
+    width:56px; height:56px; background:var(--blue); border-radius:10px;
+    display:flex; align-items:center; justify-content:center; color:#fff; font-size:1.4rem; margin-bottom:18px;
+  }
+  .service-card p{ color:var(--muted); font-size:.88rem; margin:0; }
+
+  /* Appointment */
+  .appt-section{ background:linear-gradient(rgba(31,58,147,.9), rgba(31,58,147,.9)), url('https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?w=1400&q=80'); background-size:cover; background-position:center; color:#fff; }
+  .appt-section h2, .appt-section p{ color:#fff; }
+  .appt-section .form-control, .appt-section .form-select{ border-radius:6px; border:none; padding:12px 14px; }
+  .appt-section .btn-book{ background:var(--blue); color:#fff; border-radius:30px; padding:12px 36px; font-weight:500; }
+  .appt-section .btn-book:hover{ background:#fff; color:var(--blue); }
+
+  /* Departments */
+  .dept-list .nav-link{
+    color:var(--ink) !important; border-left:3px solid transparent; border-radius:0;
+    padding:12px 16px; font-weight:500; text-align:left;
+  }
+  .dept-list .nav-link.active{ color:var(--blue) !important; border-left-color:var(--blue); background:#f1f5ff; }
+
+  /* Doctors */
+  .doctor-card{ border:1px solid #eaeef5; border-radius:10px; overflow:hidden; display:flex; height:100%; }
+  .doctor-card img{ width:140px; object-fit:cover; }
+  .doctor-card .info{ padding:20px; }
+  .doctor-card h6{ margin-bottom:2px; }
+  .doctor-card .role{ color:var(--blue); font-size:.82rem; margin-bottom:10px; display:block; }
+  .doctor-card p{ font-size:.82rem; color:var(--muted); }
+  .doctor-card .social a{ color:var(--muted); margin-right:10px; }
+
+  /* FAQ */
+  .faq-highlight{ background:var(--blue); color:#fff; border-radius:10px; padding:26px; margin-bottom:16px; }
+  .faq-highlight h6{ color:#fff; }
+  .faq-highlight p{ color:#dbe4ff; font-size:.88rem; margin:0; }
+  .accordion-button{ font-weight:500; }
+  .accordion-button:not(.collapsed){ color:var(--blue); background:#f1f5ff; }
+  .accordion-button:focus{ box-shadow:none; }
+
+  /* Testimonials */
+  .testi-box{ background:#fff; border-radius:10px; padding:30px; box-shadow:0 4px 16px rgba(20,30,60,.06); }
+  .testi-box img{ width:60px; height:60px; border-radius:50%; object-fit:cover; }
+  .testi-box .stars{ color:#ffb400; font-size:.85rem; }
+
+  /* Gallery */
+  .gallery img{ width:100%; height:150px; object-fit:cover; border-radius:6px; }
+
+  /* Contact */
+  .contact-info-item{ display:flex; gap:14px; margin-bottom:22px; }
+  .contact-info-item .icon{
+    width:44px; height:44px; background:var(--blue); color:#fff; border-radius:8px;
+    display:flex; align-items:center; justify-content:center; flex:none;
+  }
+  .contact-info-item h6{ margin-bottom:4px; }
+  .contact-info-item p{ margin:0; color:var(--muted); font-size:.88rem; }
+  .map-frame{ border-radius:10px; overflow:hidden; border:1px solid #eaeef5; }
+
+  /* Footer */
+  footer{ background:var(--blue-dark); color:#c6d3f5; padding:55px 0 0; }
+  footer h6{ color:#fff; margin-bottom:16px; }
+  footer a{ color:#c6d3f5; }
+  footer a:hover{ color:#fff; }
+  footer .brand{ color:#fff; font-weight:700; font-size:1.4rem; }
+  .footer-bottom{ border-top:1px solid rgba(255,255,255,.12); margin-top:36px; padding:18px 0; font-size:.82rem; }
+</style>
+</head>
+<body data-bs-spy="scroll" data-bs-target="#mainNav" data-bs-offset="120" data-bs-smooth-scroll="true" tabindex="0">
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="container d-flex justify-content-between flex-wrap">
+    <div>
+      <i class="bi bi-envelope"></i> <a href="mailto:contact@example.com">contact@example.com</a>
+      <span class="ms-3"><i class="bi bi-telephone"></i> +1 5589 55488 55</span>
+    </div>
+    <div class="social">
+      <a href="#"><i class="bi bi-twitter-x"></i></a>
+      <a href="#"><i class="bi bi-facebook"></i></a>
+      <a href="#"><i class="bi bi-instagram"></i></a>
+      <a href="#"><i class="bi bi-linkedin"></i></a>
+    </div>
+  </div>
+</div>
+
+<!-- NAVBAR -->
+<nav class="navbar navbar-expand-lg sticky-top" id="mainNav">
+  <div class="container">
+    <a class="navbar-brand" href="#home">Medi<span>lab</span></a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu" aria-controls="navMenu" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navMenu">
+      <ul class="navbar-nav mx-auto">
+        <li class="nav-item"><a class="nav-link" href="#home">Home</a></li>
+        <li class="nav-item"><a class="nav-link" href="#about">About</a></li>
+        <li class="nav-item"><a class="nav-link" href="#services">Services</a></li>
+        <li class="nav-item"><a class="nav-link" href="#departments">Departments</a></li>
+        <li class="nav-item"><a class="nav-link" href="#doctors">Doctors</a></li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">More</a>
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item" href="#faq">FAQ</a></li>
+            <li><a class="dropdown-item" href="#gallery">Gallery</a></li>
+            <li><a class="dropdown-item" href="#testimonials">Testimonials</a></li>
+          </ul>
+        </li>
+        <li class="nav-item"><a class="nav-link" href="#contact">Contact</a></li>
+      </ul>
+      <a href="#appointment" class="btn btn-appt">Make an Appointment</a>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section id="home" class="hero">
+  <div class="container hero-inner">
+    <div class="row">
+      <div class="col-lg-6">
+        <h1 class="fw-bold mb-3">WELCOME TO <span class="text-blue">MEDILAB</span></h1>
+        <p class="mb-4">We are a team of qualified doctors and specialists dedicated to providing you and your family with the best healthcare experience, built on trust and modern medicine.</p>
+        <a href="#appointment" class="btn btn-appt px-4 py-2">Make an Appointment</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="container" style="margin-top:-70px; position:relative; z-index:2;">
+    <div class="row g-4 pb-4">
+      <div class="col-lg-4">
+        <div class="why-card h-100">
+          <h4>Why Choose Medilab?</h4>
+          <p>We combine experienced specialists, modern equipment and a patient-first approach so you always know you're in good hands.</p>
+          <a href="#about" class="btn btn-light btn-sm px-3">Learn More</a>
+        </div>
+      </div>
+      <div class="col-lg-8">
+        <div class="row g-4 h-100">
+          <div class="col-md-4">
+            <div class="feature-mini">
+              <div class="icon"><i class="bi bi-clipboard-pulse"></i></div>
+              <h6>Corporis voluptates officia laudant</h6>
+              <p>Consequatur aut suam explicabo quam alique magni error.</p>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="feature-mini">
+              <div class="icon"><i class="bi bi-heart-pulse"></i></div>
+              <h6>Ullamco laboris ladore pan</h6>
+              <p>Excepteur sint occaecat cupidatat non proident sunt culpa.</p>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="feature-mini">
+              <div class="icon"><i class="bi bi-capsule"></i></div>
+              <h6>Labore consequatur incidid dolore</h6>
+              <p>Aut suscipit aut cum nemo deleniti aut omnis dolorem.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about" style="padding-top:120px;">
+  <div class="container">
+    <div class="row g-5 align-items-center">
+      <div class="col-lg-5">
+        <div class="about-img-wrap">
+          <img src="images/about.jpg" class="img-fluid rounded" alt="Team of three medical staff standing together">
+          <a href="#" class="play-btn"><i class="bi bi-play-fill"></i></a>
+        </div>
+      </div>
+      <div class="col-lg-7">
+        <h2 class="mb-3">About Us</h2>
+        <p class="text-muted mb-4">Medilab has spent over a decade building a clinic where patients feel heard, not processed — combining specialist care with clear communication at every step.</p>
+        <div class="about-item">
+          <span class="num"><i class="bi bi-check-circle-fill"></i></span>
+          <div>
+            <h6>Ullamco laboris nisi ut aliquip consequat</h6>
+            <p>Magna facilis reprehenderit veniam consequatur libero id.</p>
+          </div>
+        </div>
+        <div class="about-item">
+          <span class="num"><i class="bi bi-check-circle-fill"></i></span>
+          <div>
+            <h6>Magnam soluta odio exercitationem reprehenderit</h6>
+            <p>Quo totam dolorum ut pariatur aut distinctio dolorum laudantium illo dienda pasata rest.</p>
+          </div>
+        </div>
+        <div class="about-item">
+          <span class="num"><i class="bi bi-check-circle-fill"></i></span>
+          <div>
+            <h6>Voluptatem et qui exercitationem</h6>
+            <p>Vel eit et aos maiores et tempore et quos exercitationem incidunt maxime veniam.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STATS -->
+<section class="bg-soft pt-0">
+  <div class="container">
+    <div class="row g-4">
+      <div class="col-6 col-md-3">
+        <div class="stat-card">
+          <div class="circle"><i class="bi bi-person-badge"></i></div>
+          <h3>13</h3>
+          <span>Doctors</span>
+        </div>
+      </div>
+      <div class="col-6 col-md-3">
+        <div class="stat-card">
+          <div class="circle"><i class="bi bi-building"></i></div>
+          <h3>3</h3>
+          <span>Departments</span>
+        </div>
+      </div>
+      <div class="col-6 col-md-3">
+        <div class="stat-card">
+          <div class="circle"><i class="bi bi-flask"></i></div>
+          <h3>2</h3>
+          <span>Research Labs</span>
+        </div>
+      </div>
+      <div class="col-6 col-md-3">
+        <div class="stat-card">
+          <div class="circle"><i class="bi bi-award"></i></div>
+          <h3>23</h3>
+          <span>Awards</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SERVICES -->
+<section id="services">
+  <div class="container">
+    <div class="text-center mb-5">
+      <h2>Services</h2>
+      <p class="text-muted">Necessitatibus eius consequatur ex aliquid fuga eum quidem sint consectetur velit</p>
+    </div>
+    <div class="row g-4">
+      <div class="col-md-4">
+        <div class="service-card">
+          <div class="icon-box"><i class="bi bi-heart"></i></div>
+          <h5>Nesciunt Mete</h5>
+          <p>Provident nihil minus qui consequatur non omnis maiores. Eos accusamus minus dolor iure perferendis tempore.</p>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="service-card">
+          <div class="icon-box"><i class="bi bi-eyedropper"></i></div>
+          <h5>Eosle Commodi</h5>
+          <p>Ut autem aut autem non a. Sint sunt sit facilis nam iusto sint. Libero corrupti neque eum hic non ut.</p>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="service-card">
+          <div class="icon-box"><i class="bi bi-clipboard2-pulse"></i></div>
+          <h5>Ledo Markt</h5>
+          <p>Ut excepturi voluptatem nisi sed. Quidem rem vel eum est aut porro odit qui vel iuvantis ratae.</p>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="service-card">
+          <div class="icon-box"><i class="bi bi-lungs"></i></div>
+          <h5>Asperiores Commodit</h5>
+          <p>Non et temporibus minus omnis sed dolor esse consequatur. Cupiditate sed error at ea reiciendis.</p>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="service-card">
+          <div class="icon-box"><i class="bi bi-universal-access"></i></div>
+          <h5>Velit Doloremque</h5>
+          <p>Cumque et suscipit saepe. Est maiores autem enim facilis ut aut ipsam corporis sed. Dolor voluptatum.</p>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="service-card">
+          <div class="icon-box"><i class="bi bi-file-earmark-medical"></i></div>
+          <h5>Dolori Architecto</h5>
+          <p>Hic molestias ea quibusdam eos. Fugiat enim doloremque aut neque non et debitis iure corrupti.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- APPOINTMENT -->
+<section id="appointment" class="appt-section">
+  <div class="container">
+    <div class="text-center mb-5">
+      <h2>Appointment</h2>
+      <p>Necessitatibus eius consequatur ex aliquid fuga eum quidem sint consectetur velit</p>
+    </div>
+    <form>
+      <div class="row g-3">
+        <div class="col-md-4"><input type="text" class="form-control" placeholder="Your Name" required></div>
+        <div class="col-md-4"><input type="email" class="form-control" placeholder="Your Email" required></div>
+        <div class="col-md-4"><input type="tel" class="form-control" placeholder="Your Phone" required></div>
+        <div class="col-md-4"><input type="date" class="form-control"></div>
+        <div class="col-md-4">
+          <select class="form-select">
+            <option>Select Department</option>
+            <option>Cardiology</option>
+            <option>Neurology</option>
+            <option>Hepatology</option>
+            <option>Pediatrics</option>
+            <option>Eye Care</option>
+          </select>
+        </div>
+        <div class="col-md-4">
+          <select class="form-select">
+            <option>Select Doctor</option>
+            <option>Walter White</option>
+            <option>Sarah Jhonson</option>
+            <option>William Anderson</option>
+            <option>Amanda Jepson</option>
+          </select>
+        </div>
+        <div class="col-12"><textarea class="form-control" rows="4" placeholder="Message (Optional)"></textarea></div>
+        <div class="col-12 text-center">
+          <button type="submit" class="btn btn-book">Make an Appointment</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</section>
+
+<!-- DEPARTMENTS -->
+<section id="departments">
+  <div class="container">
+    <div class="text-center mb-5">
+      <h2>Departments</h2>
+      <p class="text-muted">Necessitatibus eius consequatur ex aliquid fuga eum quidem sint consectetur velit</p>
+    </div>
+    <div class="row g-4">
+      <div class="col-md-3">
+        <div class="nav flex-column dept-list" id="deptTab" role="tablist">
+          <button class="nav-link active text-start" data-bs-toggle="pill" data-bs-target="#dept1">Cardiology</button>
+          <button class="nav-link text-start" data-bs-toggle="pill" data-bs-target="#dept2">Neurology</button>
+          <button class="nav-link text-start" data-bs-toggle="pill" data-bs-target="#dept3">Hepatology</button>
+          <button class="nav-link text-start" data-bs-toggle="pill" data-bs-target="#dept4">Pediatrics</button>
+          <button class="nav-link text-start" data-bs-toggle="pill" data-bs-target="#dept5">Eye Care</button>
+        </div>
+      </div>
+      <div class="col-md-9">
+        <div class="tab-content">
+          <div class="tab-pane fade show active" id="dept1">
+            <div class="row align-items-center g-4">
+              <div class="col-lg-7">
+                <h4>Cardiology</h4>
+                <p class="fst-italic text-muted">Qui laudantium consequatur laboris qui ut aliquip dila corata repere a videna maiora paulona minia.</p>
+                <p class="text-muted">Et molestias non doloribus. Voluptatibus ut enim blanditiis atque harum sint. Alumni eos qui sequi molestiae repellat qui dolorem quisquam.</p>
+              </div>
+              <div class="col-lg-5">
+                <img src="images/departments-1.jpg" class="img-fluid rounded" alt="Stethoscope, medication and an ECG printout">
+              </div>
+            </div>
+          </div>
+          <div class="tab-pane fade" id="dept2">
+            <div class="row align-items-center g-4">
+              <div class="col-lg-7">
+                <h4>Neurology</h4>
+                <p class="fst-italic text-muted">Diagnosis and treatment of conditions affecting the brain, spine and nervous system.</p>
+                <p class="text-muted">Our neurology team combines imaging, diagnostics and long-term care plans built around each patient's history.</p>
+              </div>
+              <div class="col-lg-5">
+                <img src="images/departments-2.jpg" class="img-fluid rounded" alt="Anatomical model of a skull with visible blood vessels">
+              </div>
+            </div>
+          </div>
+          <div class="tab-pane fade" id="dept3">
+            <div class="row align-items-center g-4">
+              <div class="col-lg-7">
+                <h4>Hepatology</h4>
+                <p class="fst-italic text-muted">Specialist care for liver, gallbladder, biliary tree and pancreas conditions.</p>
+                <p class="text-muted">We offer full diagnostic workups and ongoing management for both acute and chronic conditions.</p>
+              </div>
+              <div class="col-lg-5">
+                <img src="images/departments-3.jpg" class="img-fluid rounded" alt="Doctor checking a patient's blood pressure">
+              </div>
+            </div>
+          </div>
+          <div class="tab-pane fade" id="dept4">
+            <div class="row align-items-center g-4">
+              <div class="col-lg-7">
+                <h4>Pediatrics</h4>
+                <p class="fst-italic text-muted">Compassionate healthcare for infants, children and adolescents.</p>
+                <p class="text-muted">From routine checkups to specialist referrals, our pediatric team keeps care consistent as your child grows.</p>
+              </div>
+              <div class="col-lg-5">
+                <img src="images/departments-4.jpg" class="img-fluid rounded" alt="Surgical team holding a newborn baby in the operating room">
+              </div>
+            </div>
+          </div>
+          <div class="tab-pane fade" id="dept5">
+            <div class="row align-items-center g-4">
+              <div class="col-lg-7">
+                <h4>Eye Care</h4>
+                <p class="fst-italic text-muted">Comprehensive vision testing, treatment and surgical eye care.</p>
+                <p class="text-muted">Our ophthalmology unit is equipped for everything from routine exams to advanced procedures.</p>
+              </div>
+              <div class="col-lg-5">
+                <img src="images/departments-5.jpg" class="img-fluid rounded" alt="Eye specialist examining a patient's eye with equipment">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DOCTORS -->
+<section id="doctors" class="bg-soft">
+  <div class="container">
+    <div class="text-center mb-5">
+      <h2>Doctors</h2>
+      <p class="text-muted">Necessitatibus eius consequatur ex aliquid fuga eum quidem sint consectetur velit</p>
+    </div>
+    <div class="row g-4">
+      <div class="col-md-6">
+        <div class="doctor-card">
+          <img src="images/doctors-1.jpg" alt="Dr. Walter White smiling in a white coat with a stethoscope">
+          <div class="info">
+            <h6>Walter White</h6>
+            <span class="role">Chief Medical Officer</span>
+            <p>Explicabo voluptatem mollitia et repellat qui dolorem quisquam.</p>
+            <div class="social">
+              <a href="#"><i class="bi bi-twitter-x"></i></a>
+              <a href="#"><i class="bi bi-facebook"></i></a>
+              <a href="#"><i class="bi bi-instagram"></i></a>
+              <a href="#"><i class="bi bi-linkedin"></i></a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="doctor-card">
+          <img src="images/doctors-2.jpg" alt="Dr. Sarah Jhonson smiling in a white coat">
+          <div class="info">
+            <h6>Sarah Jhonson</h6>
+            <span class="role">Anesthesiologist</span>
+            <p>Aut maiores voluptates amet et quis doloremque qui similique.</p>
+            <div class="social">
+              <a href="#"><i class="bi bi-twitter-x"></i></a>
+              <a href="#"><i class="bi bi-facebook"></i></a>
+              <a href="#"><i class="bi bi-instagram"></i></a>
+              <a href="#"><i class="bi bi-linkedin"></i></a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="doctor-card">
+          <img src="images/doctors-3.jpg" alt="Dr. William Anderson smiling with arms crossed">
+          <div class="info">
+            <h6>William Anderson</h6>
+            <span class="role">Cardiology</span>
+            <p>Quisquam facilis cum velit laborum corrupti fuga rerum quia.</p>
+            <div class="social">
+              <a href="#"><i class="bi bi-twitter-x"></i></a>
+              <a href="#"><i class="bi bi-facebook"></i></a>
+              <a href="#"><i class="bi bi-instagram"></i></a>
+              <a href="#"><i class="bi bi-linkedin"></i></a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="doctor-card">
+          <img src="images/doctors-4.jpg" alt="Dr. Amanda Jepson holding a tablet">
+          <div class="info">
+            <h6>Amanda Jepson</h6>
+            <span class="role">Neurosurgeon</span>
+            <p>Dolorum optio officiis odit labore culpa perferendis illum.</p>
+            <div class="social">
+              <a href="#"><i class="bi bi-twitter-x"></i></a>
+              <a href="#"><i class="bi bi-facebook"></i></a>
+              <a href="#"><i class="bi bi-instagram"></i></a>
+              <a href="#"><i class="bi bi-linkedin"></i></a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section id="faq">
+  <div class="container">
+    <div class="text-center mb-5">
+      <h2>Frequently Asked Questions</h2>
+      <p class="text-muted">Necessitatibus eius consequatur ex aliquid fuga eum quidem sint consectetur velit</p>
+    </div>
+    <div class="row g-4">
+      <div class="col-lg-8">
+        <div class="faq-highlight">
+          <h6>Non consectetur a erat nam at lectus urna duis?</h6>
+          <p>Feugiat pretium nibh ipsum consequat. Tempus iaculis urna id volutpat lacus laoreet non curabitur gravida. Venenatis lectus magna fringilla urna porttitor rhoncus dolor purus non.</p>
+        </div>
+        <div class="accordion" id="faqAccordion">
+          <div class="accordion-item">
+            <h2 class="accordion-header">
+              <button class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#faq1">Feugiat scelerisque varius morbi enim nunc faucibus?</button>
+            </h2>
+            <div id="faq1" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+              <div class="accordion-body text-muted">Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.</div>
+            </div>
+          </div>
+          <div class="accordion-item">
+            <h2 class="accordion-header">
+              <button class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#faq2">Dolor sit amet consectetur adipiscing elit pellentesque?</button>
+            </h2>
+            <div id="faq2" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+              <div class="accordion-body text-muted">Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium.</div>
+            </div>
+          </div>
+          <div class="accordion-item">
+            <h2 class="accordion-header">
+              <button class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#faq3">Ac odio tempor orci dapibus. Aliquam eleifend mi in nulla?</button>
+            </h2>
+            <div id="faq3" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+              <div class="accordion-body text-muted">Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae.</div>
+            </div>
+          </div>
+          <div class="accordion-item">
+            <h2 class="accordion-header">
+              <button class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#faq4">Tempus quam pellentesque nec nam aliquam sem et tortor?</button>
+            </h2>
+            <div id="faq4" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+              <div class="accordion-body text-muted">Curabitur non nulla sit amet nisl tempus convallis quis ac lectus consequat.</div>
+            </div>
+          </div>
+          <div class="accordion-item">
+            <h2 class="accordion-header">
+              <button class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#faq5">Perspiciatis quod quo quos nulla quo illum ullam?</button>
+            </h2>
+            <div id="faq5" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+              <div class="accordion-body text-muted">Nulla porttitor accumsan tincidunt. Praesent sapien massa, convallis a pellentesque nec.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-4 d-none d-lg-block">
+        <img src="https://images.unsplash.com/photo-1666887360742-974c8fce8e6a?w=500&q=80" class="img-fluid rounded" alt="Doctor answering questions">
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section id="testimonials" class="bg-soft">
+  <div class="container">
+    <div class="text-center mb-5">
+      <h2>Testimonials</h2>
+    </div>
+    <div id="testiCarousel" class="carousel slide" data-bs-ride="carousel">
+      <div class="carousel-inner">
+        <div class="carousel-item active">
+          <div class="testi-box mx-auto" style="max-width:640px;">
+            <div class="d-flex align-items-center gap-3 mb-3">
+              <img src="images/testimonials-1.jpg" alt="Saul Goodman">
+              <div>
+                <h6 class="mb-0">Saul Goodman</h6>
+                <div class="stars">★★★★★</div>
+              </div>
+            </div>
+            <p class="text-muted mb-0">"Proin iaculis purus consequat sem cure digni ssim donec porttitora entum suscipit rhoncus. Accusantium quam ultricies eget."</p>
+          </div>
+        </div>
+        <div class="carousel-item">
+          <div class="testi-box mx-auto" style="max-width:640px;">
+            <div class="d-flex align-items-center gap-3 mb-3">
+              <img src="images/testimonials-2.jpg" alt="Sara Wilsson">
+              <div>
+                <h6 class="mb-0">Sara Wilsson</h6>
+                <div class="stars">★★★★★</div>
+              </div>
+            </div>
+            <p class="text-muted mb-0">"Export tempor illum tamen malis malis eram quae irure esse labore quem cillum quid quo veniam."</p>
+          </div>
+        </div>
+        <div class="carousel-item">
+          <div class="testi-box mx-auto" style="max-width:640px;">
+            <div class="d-flex align-items-center gap-3 mb-3">
+              <img src="images/testimonials-3.jpg" alt="Jena Karlis">
+              <div>
+                <h6 class="mb-0">Jena Karlis</h6>
+                <div class="stars">★★★★★</div>
+              </div>
+            </div>
+            <p class="text-muted mb-0">"Enim nisi quem export duis labore cillum quae magna enim sint quorum nulla."</p>
+          </div>
+        </div>
+        <div class="carousel-item">
+          <div class="testi-box mx-auto" style="max-width:640px;">
+            <div class="d-flex align-items-center gap-3 mb-3">
+              <img src="images/testimonials-4.jpg" alt="Matt Brandon">
+              <div>
+                <h6 class="mb-0">Matt Brandon</h6>
+                <div class="stars">★★★★★</div>
+              </div>
+            </div>
+            <p class="text-muted mb-0">"Fugiat enim eram quae cillum dolore dolor amet nulla culpa multos export minim fugiat minim."</p>
+          </div>
+        </div>
+        <div class="carousel-item">
+          <div class="testi-box mx-auto" style="max-width:640px;">
+            <div class="d-flex align-items-center gap-3 mb-3">
+              <img src="images/testimonials-5.jpg" alt="John Larson">
+              <div>
+                <h6 class="mb-0">John Larson</h6>
+                <div class="stars">★★★★★</div>
+              </div>
+            </div>
+            <p class="text-muted mb-0">"Quis quorum aliqua sint quem legam fore sunt eram irure aliqua veniam tempor noster veniam."</p>
+          </div>
+        </div>
+      </div>
+      <div class="text-center mt-4">
+        <button class="btn btn-sm btn-outline-secondary rounded-circle me-2" type="button" data-bs-target="#testiCarousel" data-bs-slide="prev"><i class="bi bi-chevron-left"></i></button>
+        <button class="btn btn-sm btn-outline-secondary rounded-circle" type="button" data-bs-target="#testiCarousel" data-bs-slide="next"><i class="bi bi-chevron-right"></i></button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- GALLERY -->
+<section id="gallery">
+  <div class="container">
+    <div class="text-center mb-5">
+      <h2>Gallery</h2>
+      <p class="text-muted">Necessitatibus eius consequatur ex aliquid fuga eum quidem sint consectetur velit</p>
+    </div>
+    <div class="row g-3 gallery">
+      <div class="col-6 col-md-4"><img src="images/gallery-1.jpg" alt="Surgical team performing an operation"></div>
+      <div class="col-6 col-md-4"><img src="images/gallery-2.jpg" alt="Lab technician handling a blood sample"></div>
+      <div class="col-6 col-md-4"><img src="images/gallery-3.jpg" alt="Lab scientist working at a bench"></div>
+      <div class="col-6 col-md-4"><img src="images/gallery-4.jpg" alt="Surgical team in an operating room under bright lights"></div>
+      <div class="col-6 col-md-4"><img src="images/gallery-5.jpg" alt="Doctor wearing a mask standing in a hospital hallway"></div>
+      <div class="col-6 col-md-4"><img src="images/gallery-6.jpg" alt="Clinician performing a close-up procedure"></div>
+      <div class="col-6 col-md-4"><img src="images/gallery-7.jpg" alt="MRI scanner in an imaging room"></div>
+      <div class="col-6 col-md-4"><img src="images/gallery-8.jpg" alt="Surgeons operating under bright surgical lights"></div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact" class="bg-soft">
+  <div class="container">
+    <div class="text-center mb-5">
+      <h2>Contact</h2>
+      <p class="text-muted">Necessitatibus eius consequatur ex aliquid fuga eum quidem sint consectetur velit</p>
+    </div>
+    <div class="map-frame mb-5">
+      <iframe src="https://www.openstreetmap.org/export/embed.html?bbox=-74.02%2C40.70%2C-73.96%2C40.75&layer=mapnik" width="100%" height="320" style="border:0;" loading="lazy" title="Map showing clinic location"></iframe>
+    </div>
+    <div class="row g-5">
+      <div class="col-lg-4">
+        <div class="contact-info-item">
+          <div class="icon"><i class="bi bi-geo-alt"></i></div>
+          <div><h6>Location</h6><p>A108 Adam Street, New York, NY 535022</p></div>
+        </div>
+        <div class="contact-info-item">
+          <div class="icon"><i class="bi bi-telephone"></i></div>
+          <div><h6>Call Us</h6><p>+1 5589 55488 55</p></div>
+        </div>
+        <div class="contact-info-item">
+          <div class="icon"><i class="bi bi-envelope"></i></div>
+          <div><h6>Email Us</h6><p>info@example.com</p></div>
+        </div>
+      </div>
+      <div class="col-lg-8">
+        <form>
+          <div class="row g-3">
+            <div class="col-md-6"><input type="text" class="form-control" placeholder="Your Name" required></div>
+            <div class="col-md-6"><input type="email" class="form-control" placeholder="Your Email" required></div>
+            <div class="col-12"><input type="text" class="form-control" placeholder="Subject"></div>
+            <div class="col-12"><textarea class="form-control" rows="5" placeholder="Message" required></textarea></div>
+            <div class="col-12"><button type="submit" class="btn btn-appt px-4">Send Message</button></div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="container">
+    <div class="row g-4">
+      <div class="col-lg-4">
+        <div class="brand mb-2">Medilab</div>
+        <p class="mb-1">A108 Adam Street</p>
+        <p class="mb-1">New York, NY 535022</p>
+        <p class="mb-1">Phone: +1 5589 55488 55</p>
+        <p>Email: info@example.com</p>
+      </div>
+      <div class="col-6 col-lg-2">
+        <h6>Useful Links</h6>
+        <ul class="list-unstyled">
+          <li class="mb-2"><a href="#home">Home</a></li>
+          <li class="mb-2"><a href="#about">About us</a></li>
+          <li class="mb-2"><a href="#services">Services</a></li>
+          <li class="mb-2"><a href="#">Terms of service</a></li>
+          <li><a href="#">Privacy policy</a></li>
+        </ul>
+      </div>
+      <div class="col-6 col-lg-2">
+        <h6>Our Services</h6>
+        <ul class="list-unstyled">
+          <li class="mb-2"><a href="#">Medical Checkup</a></li>
+          <li class="mb-2"><a href="#">Product Management</a></li>
+          <li class="mb-2"><a href="#">Diagnostics</a></li>
+          <li class="mb-2"><a href="#">Consulting</a></li>
+          <li><a href="#">Fitness</a></li>
+        </ul>
+      </div>
+      <div class="col-lg-4">
+        <h6>Our Newsletter</h6>
+        <p class="mb-3">Subscribe to receive updates on new services and doctors.</p>
+        <form class="d-flex">
+          <input type="email" class="form-control me-2" placeholder="Your email">
+          <button class="btn btn-appt" type="button">Subscribe</button>
+        </form>
+      </div>
+    </div>
+    <div class="footer-bottom text-center">
+      © Copyright <strong>Medilab</strong>. All Rights Reserved.
+    </div>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+  // Navbar shadow once the page scrolls
+  const mainNav = document.getElementById('mainNav');
+  const onScroll = () => mainNav.classList.toggle('is-scrolled', window.scrollY > 10);
+  onScroll();
+  window.addEventListener('scroll', onScroll);
+
+  // Close the mobile menu after a link is tapped
+  const navMenu = document.getElementById('navMenu');
+  navMenu.querySelectorAll('.nav-link:not(.dropdown-toggle), .dropdown-item').forEach(link => {
+    link.addEventListener('click', () => {
+      if (navMenu.classList.contains('show')) {
+        bootstrap.Collapse.getOrCreateInstance(navMenu).hide();
+      }
+    });
+  });
+</script>
+</body>
+</html>
